@@ -7,7 +7,7 @@ A mod that allows you to customize the background color of the level info page.
 
 # Credits
 - [HexCodes](https://gdbrowser.com/u/16858187) - Initial idea for the mod
-- [hiimjustin000](https://gdbrowser.com/u/7466002) - Creator of the mod
+- [hiimjasmine00](https://gdbrowser.com/u/7466002) - Creator of the mod
 
 # Gallery
 ![Color Popup](./resources/color-popup.png)

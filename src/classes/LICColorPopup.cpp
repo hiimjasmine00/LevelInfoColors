@@ -1,12 +1,8 @@
 #include "LICColorPopup.hpp"
+#include <Geode/binding/ButtonSprite.hpp>
+#include <Geode/loader/Mod.hpp>
 
 using namespace geode::prelude;
-
-unsigned char LICColorPopup::stringToByte(std::string const& str) {
-    auto i = 0;
-    auto res = std::from_chars(str.data(), str.data() + str.size(), i);
-    return res.ec == std::errc() ? i : 255;
-}
 
 LICColorPopup* LICColorPopup::create(CCSprite* target, ccColor3B const& color, ccColor3B const& defaultColor, bool isDaily, bool isWeekly, bool isEvent, bool isGauntlet) {
     auto ret = new LICColorPopup();
@@ -89,7 +85,7 @@ bool LICColorPopup::setup(CCSprite* target, ccColor3B const& color, ccColor3B co
     m_rInput->setScale(0.7f);
     m_rInput->setCommonFilter(CommonFilter::Uint);
     m_rInput->setCallback([this](std::string const& text) {
-        m_color.r = text.empty() ? m_color.r : stringToByte(text);
+        m_color.r = text.empty() ? m_color.r : numFromString<uint8_t>(text).unwrapOr(255);
         updateState(m_rInput);
     });
     rColumn->addChild(m_rInput);
@@ -109,7 +105,7 @@ bool LICColorPopup::setup(CCSprite* target, ccColor3B const& color, ccColor3B co
     m_gInput->setScale(0.7f);
     m_gInput->setCommonFilter(CommonFilter::Uint);
     m_gInput->setCallback([this](std::string const& text) {
-        m_color.g = text.empty() ? m_color.g : stringToByte(text);
+        m_color.g = text.empty() ? m_color.g : numFromString<uint8_t>(text).unwrapOr(255);
         updateState(m_gInput);
     });
     gColumn->addChild(m_gInput);
@@ -129,7 +125,7 @@ bool LICColorPopup::setup(CCSprite* target, ccColor3B const& color, ccColor3B co
     m_bInput->setScale(0.7f);
     m_bInput->setCommonFilter(CommonFilter::Uint);
     m_bInput->setCallback([this](std::string const& text) {
-        m_color.b = text.empty() ? m_color.b : stringToByte(text);
+        m_color.b = text.empty() ? m_color.b : numFromString<uint8_t>(text).unwrapOr(255);
         updateState(m_bInput);
     });
     bColumn->addChild(m_bInput);
@@ -165,11 +161,12 @@ bool LICColorPopup::setup(CCSprite* target, ccColor3B const& color, ccColor3B co
     auto okBtnSpr = ButtonSprite::create("OK");
     okBtnSpr->setScale(0.7f);
     auto okBtn = CCMenuItemExt::createSpriteExtra(okBtnSpr, [this, isDaily, isWeekly, isEvent, isGauntlet](auto) {
-        if (isDaily) Mod::get()->setSettingValue("daily-color", m_color);
-        else if (isWeekly) Mod::get()->setSettingValue("weekly-color", m_color);
-        else if (isEvent) Mod::get()->setSettingValue("event-color", m_color);
-        else if (isGauntlet) Mod::get()->setSettingValue("gauntlet-color", m_color);
-        else Mod::get()->setSettingValue("normal-color", m_color);
+        auto mod = Mod::get();
+        if (isDaily) mod->setSettingValue("daily-color", m_color);
+        else if (isWeekly) mod->setSettingValue("weekly-color", m_color);
+        else if (isEvent) mod->setSettingValue("event-color", m_color);
+        else if (isGauntlet) mod->setSettingValue("gauntlet-color", m_color);
+        else mod->setSettingValue("normal-color", m_color);
         setKeypadEnabled(false);
         setTouchEnabled(false);
         removeFromParentAndCleanup(true);

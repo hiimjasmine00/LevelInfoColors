@@ -1,3 +1,6 @@
+#include <Geode/ui/Popup.hpp>
+#include <Geode/ui/TextInput.hpp>
+
 class LICColorPopup :
     public geode::Popup<cocos2d::CCSprite*, cocos2d::ccColor3B const&, cocos2d::ccColor3B const&, bool, bool, bool, bool>,
     public cocos2d::extension::ColorPickerDelegate
@@ -14,8 +17,6 @@ protected:
     cocos2d::CCSprite* m_newColorSpr;
     CCMenuItemSpriteExtra* m_resetBtn;
     CCMenuItemSpriteExtra* m_hardResetBtn;
-
-    static unsigned char stringToByte(std::string const&);
 
     bool setup(cocos2d::CCSprite*, cocos2d::ccColor3B const&, cocos2d::ccColor3B const&, bool, bool, bool, bool) override;
     void updateState(CCNode* except = nullptr);

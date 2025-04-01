@@ -1,8 +1,10 @@
-#include "LICColorPopup.hpp"
+#include "../classes/LICColorPopup.hpp"
+#include <Geode/binding/GJGameLevel.hpp>
+#include <Geode/modify/LevelInfoLayer.hpp>
+#include <Geode/ui/BasedButtonSprite.hpp>
 
 using namespace geode::prelude;
 
-#include <Geode/modify/LevelInfoLayer.hpp>
 class $modify(LICLevelInfoLayer, LevelInfoLayer) {
     bool init(GJGameLevel* level, bool challenge) {
         if (!LevelInfoLayer::init(level, challenge)) return false;
@@ -10,15 +12,16 @@ class $modify(LICLevelInfoLayer, LevelInfoLayer) {
         auto dailyID = level->m_dailyID.value();
         auto background = static_cast<CCSprite*>(getChildByID("background"));
         if (background) {
-            if (dailyID > 0 && dailyID < 100000) background->setColor(Mod::get()->getSettingValue<ccColor3B>("daily-color"));
-            else if (dailyID >= 100000 && dailyID < 200000) background->setColor(Mod::get()->getSettingValue<ccColor3B>("weekly-color"));
-            else if (dailyID >= 200000) background->setColor(Mod::get()->getSettingValue<ccColor3B>("event-color"));
-            else if (level->m_gauntletLevel) background->setColor(Mod::get()->getSettingValue<ccColor3B>("gauntlet-color"));
-            else background->setColor(Mod::get()->getSettingValue<ccColor3B>("normal-color"));
+            auto mod = Mod::get();
+            if (dailyID > 0 && dailyID < 100000) background->setColor(mod->getSettingValue<ccColor3B>("daily-color"));
+            else if (dailyID >= 100000 && dailyID < 200000) background->setColor(mod->getSettingValue<ccColor3B>("weekly-color"));
+            else if (dailyID >= 200000) background->setColor(mod->getSettingValue<ccColor3B>("event-color"));
+            else if (level->m_gauntletLevel) background->setColor(mod->getSettingValue<ccColor3B>("gauntlet-color"));
+            else background->setColor(mod->getSettingValue<ccColor3B>("normal-color"));
         }
 
-        auto colorButtonSprite = CircleButtonSprite::createWithSpriteFrameName("GJ_paintBtn_001.png", 1.0f, CircleBaseColor::Green);
-        auto colorButton = CCMenuItemSpriteExtra::create(colorButtonSprite, this, menu_selector(LICLevelInfoLayer::onPickColor));
+        auto colorButton = CCMenuItemSpriteExtra::create(
+            CircleButtonSprite::createWithSpriteFrameName("GJ_paintBtn_001.png", 1.0f), this, menu_selector(LICLevelInfoLayer::onPickColor));
         colorButton->setID("color-button"_spr);
         auto leftSideMenu = getChildByID("left-side-menu");
         leftSideMenu->addChild(colorButton);
