@@ -2,7 +2,7 @@
 #include <Geode/ui/TextInput.hpp>
 
 class LICColorPopup :
-    public geode::Popup<cocos2d::CCSprite*, cocos2d::ccColor3B const&, cocos2d::ccColor3B const&, bool, bool, bool, bool>,
+    public geode::Popup<cocos2d::CCSprite*, const cocos2d::ccColor3B&, const cocos2d::ccColor3B&, bool, bool, bool, bool>,
     public cocos2d::extension::ColorPickerDelegate
 {
 protected:
@@ -18,10 +18,10 @@ protected:
     CCMenuItemSpriteExtra* m_resetBtn;
     CCMenuItemSpriteExtra* m_hardResetBtn;
 
-    bool setup(cocos2d::CCSprite*, cocos2d::ccColor3B const&, cocos2d::ccColor3B const&, bool, bool, bool, bool) override;
+    bool setup(cocos2d::CCSprite*, const cocos2d::ccColor3B&, const cocos2d::ccColor3B&, bool, bool, bool, bool) override;
     void updateState(CCNode* except = nullptr);
     void colorValueChanged(cocos2d::ccColor3B) override;
     void onClose(CCObject*) override;
 public:
-    static LICColorPopup* create(cocos2d::CCSprite*, cocos2d::ccColor3B const&, cocos2d::ccColor3B const&, bool, bool, bool, bool);
+    static LICColorPopup* create(cocos2d::CCSprite*, const cocos2d::ccColor3B&, const cocos2d::ccColor3B&, bool, bool, bool, bool);
 };

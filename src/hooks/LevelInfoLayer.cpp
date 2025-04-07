@@ -9,10 +9,9 @@ class $modify(LICLevelInfoLayer, LevelInfoLayer) {
     bool init(GJGameLevel* level, bool challenge) {
         if (!LevelInfoLayer::init(level, challenge)) return false;
 
-        auto dailyID = level->m_dailyID.value();
-        auto background = static_cast<CCSprite*>(getChildByID("background"));
-        if (background) {
+        if (auto background = static_cast<CCSprite*>(getChildByID("background"))) {
             auto mod = Mod::get();
+            auto dailyID = level->m_dailyID.value();
             if (dailyID > 0 && dailyID < 100000) background->setColor(mod->getSettingValue<ccColor3B>("daily-color"));
             else if (dailyID >= 100000 && dailyID < 200000) background->setColor(mod->getSettingValue<ccColor3B>("weekly-color"));
             else if (dailyID >= 200000) background->setColor(mod->getSettingValue<ccColor3B>("event-color"));

@@ -1,4 +1,8 @@
 # Level Info Colors Changelog
+## v1.0.4 (2025-04-07)
+- Added support for iOS
+- Added node IDs to the settings popup
+
 ## v1.0.3 (2025-04-01)
 - Internal code changes (April Fools' Day)
 
