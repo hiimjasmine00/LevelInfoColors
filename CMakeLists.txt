@@ -9,7 +9,7 @@ endif()
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(GEODE_DISABLE_PRECOMPILED_HEADERS ON)
 
-project(LevelInfoColors VERSION 1.0.4)
+project(LevelInfoColors VERSION 1.0.5)
 
 add_library(${PROJECT_NAME} SHARED
     src/classes/LICColorPopup.cpp

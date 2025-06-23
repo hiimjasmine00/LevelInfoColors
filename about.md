@@ -1,5 +1,5 @@
 # Level Info Colors
-A mod that allows you to customize the background color of the level info page.
+Customizable level background colors.
 
 # Features
 - A button in the level info page that allows you to change the background color, which can also be changed through the settings menu

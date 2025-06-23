@@ -1,16 +1,16 @@
 {
-    "geode": "4.3.1",
+    "geode": "4.6.1",
     "gd": {
         "android": "2.2074",
         "win": "2.2074",
         "mac": "2.2074",
         "ios": "2.2074"
     },
-    "version": "v1.0.4",
+    "version": "v1.0.5",
     "id": "hiimjustin000.level_info_colors",
     "name": "Level Info Colors",
     "developer": "hiimjasmine00",
-    "description": "A mod that allows you to customize the background color of the level info page.",
+    "description": "Customizable level background colors.",
     "dependencies": {
         "geode.node-ids": ">=v1.0.0"
     },
