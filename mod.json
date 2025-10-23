@@ -1,49 +1,55 @@
 {
-    "geode": "4.6.1",
+    "geode": "4.9.0",
     "gd": {
         "android": "2.2074",
         "win": "2.2074",
         "mac": "2.2074",
         "ios": "2.2074"
     },
-    "version": "v1.0.5",
+    "version": "v1.1.0",
     "id": "hiimjustin000.level_info_colors",
     "name": "Level Info Colors",
     "developer": "hiimjasmine00",
     "description": "Customizable level background colors.",
     "dependencies": {
-        "geode.node-ids": ">=v1.0.0"
+        "geode.node-ids": ">=v1.0.0",
+        "hiimjasmine00.optional_settings": ">=v1.0.0"
     },
     "settings": {
         "normal-color": {
             "name": "Normal Color",
             "description": "The color of the background when the level is not daily, weekly, or in a gauntlet.",
-            "type": "color",
-            "default": "#0066FF"
+            "type": "custom:hiimjasmine00.optional_settings/optional-color",
+            "default": "#0066FF",
+            "default-enabled": true
         },
         "daily-color": {
             "name": "Daily Color",
             "description": "The color of the background when the level is daily.",
-            "type": "color",
-            "default": "#0066FF"
+            "type": "custom:hiimjasmine00.optional_settings/optional-color",
+            "default": "#0066FF",
+            "default-enabled": true
         },
         "weekly-color": {
             "name": "Weekly Color",
             "description": "The color of the background when the level is weekly.",
-            "type": "color",
-            "default": "#333333"
+            "type": "custom:hiimjasmine00.optional_settings/optional-color",
+            "default": "#333333",
+            "default-enabled": true
         },
         "event-color": {
             "name": "Event Color",
             "description": "The color of the background when the level is an event.",
-            "type": "color",
-            "default": "#63187E"
+            "type": "custom:hiimjasmine00.optional_settings/optional-color",
+            "default": "#63187E",
+            "default-enabled": true
         },
         "gauntlet-color": {
             "name": "Gauntlet Color",
             "description": "The color of the background when the level is in a gauntlet.",
-            "type": "color",
-            "default": "#333333"
+            "type": "custom:hiimjasmine00.optional_settings/optional-color",
+            "default": "#333333",
+            "default-enabled": true
         }
     },
     "resources": {

@@ -1,4 +1,7 @@
 # Level Info Colors Changelog
+## v1.1.0 (2025-10-23)
+- Added toggles to enable/disable custom colors for each level type in the settings menu via Optional Settings
+
 ## v1.0.5 (2025-06-22)
 - Ported to Geode v4.6.1
 
