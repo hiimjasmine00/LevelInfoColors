@@ -1,6 +1,7 @@
 #include "LICColorPopup.hpp"
 #include "../LevelInfoColors.hpp"
 #include <Geode/binding/ButtonSprite.hpp>
+#include <jasmine/convert.hpp>
 
 using namespace geode::prelude;
 using namespace optional_settings;
@@ -149,7 +150,7 @@ bool LICColorPopup::setup(CCSprite* target, GJGameLevel* level) {
     m_rInput->setScale(0.7f);
     m_rInput->setCommonFilter(CommonFilter::Uint);
     m_rInput->setCallback([this](const std::string& text) {
-        std::from_chars(text.data(), text.data() + text.size(), m_color.r);
+        jasmine::convert::toInt(text, m_color.r);
         updateState(m_rInput);
     });
     m_rInput->setID("r-input");
@@ -177,7 +178,7 @@ bool LICColorPopup::setup(CCSprite* target, GJGameLevel* level) {
     m_gInput->setScale(0.7f);
     m_gInput->setCommonFilter(CommonFilter::Uint);
     m_gInput->setCallback([this](const std::string& text) {
-        std::from_chars(text.data(), text.data() + text.size(), m_color.g);
+        jasmine::convert::toInt(text, m_color.g);
         updateState(m_gInput);
     });
     m_gInput->setID("g-input");
@@ -205,7 +206,7 @@ bool LICColorPopup::setup(CCSprite* target, GJGameLevel* level) {
     m_bInput->setScale(0.7f);
     m_bInput->setCommonFilter(CommonFilter::Uint);
     m_bInput->setCallback([this](const std::string& text) {
-        std::from_chars(text.data(), text.data() + text.size(), m_color.b);
+        jasmine::convert::toInt(text, m_color.b);
         updateState(m_bInput);
     });
     m_bInput->setID("b-input");
@@ -233,7 +234,7 @@ bool LICColorPopup::setup(CCSprite* target, GJGameLevel* level) {
     m_hexInput->setScale(0.7f);
     m_hexInput->setCommonFilter(CommonFilter::Hex);
     m_hexInput->setCallback([this](const std::string& text) {
-        if (auto color = cc3bFromHexString(text, true).ok()) m_color = *color;
+        if (auto color = cc3bFromHexString(text, true)) m_color = color.unwrap();
         updateState(m_hexInput);
     });
     m_hexInput->setID("hex-input");
