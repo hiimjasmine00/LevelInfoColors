@@ -8,7 +8,7 @@ using namespace optional_settings;
 
 LICColorPopup* LICColorPopup::create(CCSprite* target, GJGameLevel* level) {
     auto ret = new LICColorPopup();
-    if (ret->initAnchored(400.0f, 240.0f, target, level)) {
+    if (ret->init(target, level)) {
         ret->autorelease();
         return ret;
     }
@@ -16,7 +16,9 @@ LICColorPopup* LICColorPopup::create(CCSprite* target, GJGameLevel* level) {
     return nullptr;
 }
 
-bool LICColorPopup::setup(CCSprite* target, GJGameLevel* level) {
+bool LICColorPopup::init(CCSprite* target, GJGameLevel* level) {
+    if (!Popup::init(400.0f, 240.0f)) return false;
+
     setID("LICColorPopup");
     setTitle("Select Color");
     m_title->setID("select-color-title");
@@ -150,7 +152,7 @@ bool LICColorPopup::setup(CCSprite* target, GJGameLevel* level) {
     m_rInput->setScale(0.7f);
     m_rInput->setCommonFilter(CommonFilter::Uint);
     m_rInput->setCallback([this](const std::string& text) {
-        jasmine::convert::toInt(text, m_color.r);
+        jasmine::convert::to(text, m_color.r);
         updateState(m_rInput);
     });
     m_rInput->setID("r-input");
@@ -178,7 +180,7 @@ bool LICColorPopup::setup(CCSprite* target, GJGameLevel* level) {
     m_gInput->setScale(0.7f);
     m_gInput->setCommonFilter(CommonFilter::Uint);
     m_gInput->setCallback([this](const std::string& text) {
-        jasmine::convert::toInt(text, m_color.g);
+        jasmine::convert::to(text, m_color.g);
         updateState(m_gInput);
     });
     m_gInput->setID("g-input");
@@ -206,7 +208,7 @@ bool LICColorPopup::setup(CCSprite* target, GJGameLevel* level) {
     m_bInput->setScale(0.7f);
     m_bInput->setCommonFilter(CommonFilter::Uint);
     m_bInput->setCallback([this](const std::string& text) {
-        jasmine::convert::toInt(text, m_color.b);
+        jasmine::convert::to(text, m_color.b);
         updateState(m_bInput);
     });
     m_bInput->setID("b-input");

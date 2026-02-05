@@ -2,7 +2,7 @@
 #include <Geode/ui/TextInput.hpp>
 #include <hiimjasmine00.optional_settings/include/OptionalColor3BSetting.hpp>
 
-class LICColorPopup : public geode::Popup<cocos2d::CCSprite*, GJGameLevel*>, public cocos2d::extension::ColorPickerDelegate {
+class LICColorPopup : public geode::Popup, public cocos2d::extension::ColorPickerDelegate {
 protected:
     cocos2d::ccColor3B m_color;
     cocos2d::ccColor3B m_originalColor;
@@ -19,10 +19,10 @@ protected:
     optional_settings::OptionalColor3BSetting* m_setting;
     bool m_enabled;
 
-    bool setup(cocos2d::CCSprite*, GJGameLevel*) override;
-    void updateState(CCNode* = nullptr);
+    bool init(cocos2d::CCSprite*, GJGameLevel*);
+    void updateState(cocos2d::CCNode* = nullptr);
     void colorValueChanged(cocos2d::ccColor3B) override;
-    void onClose(CCObject*) override;
+    void onClose(cocos2d::CCObject*) override;
 public:
     static LICColorPopup* create(cocos2d::CCSprite*, GJGameLevel*);
 };
