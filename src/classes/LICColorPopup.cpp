@@ -1,7 +1,6 @@
 #include "LICColorPopup.hpp"
 #include "../LevelInfoColors.hpp"
 #include <Geode/binding/ButtonSprite.hpp>
-#include <jasmine/convert.hpp>
 
 using namespace geode::prelude;
 using namespace optional_settings;
@@ -35,10 +34,11 @@ bool LICColorPopup::init(CCSprite* target, GJGameLevel* level) {
     m_enabled = m_setting->isEnabled();
     m_target = target;
 
-    auto enabledToggler = CCMenuItemExt::createTogglerWithStandardSprites(0.8f, [this](CCMenuItemToggler* sender) {
-        m_enabled = !sender->m_toggled;
-        updateState();
-    });
+    auto offSprite = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
+    offSprite->setScale(0.8f);
+    auto onSprite = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
+    onSprite->setScale(0.8f);
+    auto enabledToggler = CCMenuItemToggler::create(offSprite, onSprite, this, menu_selector(LICColorPopup::onEnable));
     enabledToggler->toggle(m_enabled);
     enabledToggler->setPosition({ 30.0f, 30.0f });
     enabledToggler->setID("enabled-toggler");
@@ -85,19 +85,7 @@ bool LICColorPopup::init(CCSprite* target, GJGameLevel* level) {
         CCSprite::createWithSpriteFrameName("geode.loader/reset-gold.png"), 32, true, 0.0f, "GJ_button_01.png", 1.25f);
     resetBtnSpr->setScale(0.6f);
     resetBtnSpr->setCascadeOpacityEnabled(true);
-    m_resetBtn = CCMenuItemExt::createSpriteExtra(resetBtnSpr, [this](auto) {
-        createQuickPopup(
-            "Reset Color",
-            "Are you sure you want to <cy>reset</c> the <cj>color</c> to its <cg>original value</c>?",
-            "No",
-            "Yes",
-            [this](auto, bool btn2) {
-                if (!btn2) return;
-                m_color = m_originalColor;
-                updateState();
-            }
-        );
-    });
+    m_resetBtn = CCMenuItemSpriteExtra::create(resetBtnSpr, this, menu_selector(LICColorPopup::onReset));
     m_resetBtn->setLayoutOptions(AxisLayoutOptions::create()->setPrevGap(10.0f)->setNextGap(10.0f));
     m_resetBtn->setID("reset-button");
     colorMenu->addChild(m_resetBtn);
@@ -106,19 +94,7 @@ bool LICColorPopup::init(CCSprite* target, GJGameLevel* level) {
         CCSprite::createWithSpriteFrameName("geode.loader/reset-gold.png"), 32, true, 0.0f, "GJ_button_02.png", 1.25f);
     hardResetBtnSpr->setScale(0.6f);
     hardResetBtnSpr->setCascadeOpacityEnabled(true);
-    m_hardResetBtn = CCMenuItemExt::createSpriteExtra(hardResetBtnSpr, [this](auto) {
-        createQuickPopup(
-            "Hard Reset Color",
-            "Are you sure you want to <cr>hard reset</c> the <cj>color</c> to its <cg>default value</c>?",
-            "No",
-            "Yes",
-            [this](auto, bool btn2) {
-                if (!btn2) return;
-                m_color = m_defaultColor;
-                updateState();
-            }
-        );
-    });
+    m_hardResetBtn = CCMenuItemSpriteExtra::create(hardResetBtnSpr, this, menu_selector(LICColorPopup::onHardReset));
     m_hardResetBtn->setLayoutOptions(AxisLayoutOptions::create()->setPrevGap(10.0f)->setNextGap(10.0f));
     m_hardResetBtn->setID("hard-reset-button");
     colorMenu->addChild(m_hardResetBtn);
@@ -151,10 +127,7 @@ bool LICColorPopup::init(CCSprite* target, GJGameLevel* level) {
     m_rInput = TextInput::create(50.0f, "R");
     m_rInput->setScale(0.7f);
     m_rInput->setCommonFilter(CommonFilter::Uint);
-    m_rInput->setCallback([this](const std::string& text) {
-        jasmine::convert::to(text, m_color.r);
-        updateState(m_rInput);
-    });
+    m_rInput->setDelegate(this, 0);
     m_rInput->setID("r-input");
     rColumn->addChild(m_rInput);
 
@@ -179,10 +152,7 @@ bool LICColorPopup::init(CCSprite* target, GJGameLevel* level) {
     m_gInput = TextInput::create(50.0f, "G");
     m_gInput->setScale(0.7f);
     m_gInput->setCommonFilter(CommonFilter::Uint);
-    m_gInput->setCallback([this](const std::string& text) {
-        jasmine::convert::to(text, m_color.g);
-        updateState(m_gInput);
-    });
+    m_gInput->setDelegate(this, 1);
     m_gInput->setID("g-input");
     gColumn->addChild(m_gInput);
 
@@ -207,10 +177,7 @@ bool LICColorPopup::init(CCSprite* target, GJGameLevel* level) {
     m_bInput = TextInput::create(50.0f, "B");
     m_bInput->setScale(0.7f);
     m_bInput->setCommonFilter(CommonFilter::Uint);
-    m_bInput->setCallback([this](const std::string& text) {
-        jasmine::convert::to(text, m_color.b);
-        updateState(m_bInput);
-    });
+    m_bInput->setDelegate(this, 2);
     m_bInput->setID("b-input");
     bColumn->addChild(m_bInput);
 
@@ -235,10 +202,7 @@ bool LICColorPopup::init(CCSprite* target, GJGameLevel* level) {
     m_hexInput = TextInput::create(165.0f, "Hex");
     m_hexInput->setScale(0.7f);
     m_hexInput->setCommonFilter(CommonFilter::Hex);
-    m_hexInput->setCallback([this](const std::string& text) {
-        if (auto color = cc3bFromHexString(text, true)) m_color = color.unwrap();
-        updateState(m_hexInput);
-    });
+    m_hexInput->setDelegate(this, 3);
     m_hexInput->setID("hex-input");
     hexColumn->addChild(m_hexInput);
 
@@ -252,11 +216,7 @@ bool LICColorPopup::init(CCSprite* target, GJGameLevel* level) {
 
     auto okBtnSpr = ButtonSprite::create("OK");
     okBtnSpr->setScale(0.7f);
-    auto okBtn = CCMenuItemExt::createSpriteExtra(okBtnSpr, [this](auto) {
-        m_setting->setStoredValue(m_color);
-        m_setting->setEnabled(m_enabled);
-        Popup::onClose(nullptr);
-    });
+    auto okBtn = CCMenuItemSpriteExtra::create(okBtnSpr, this, menu_selector(LICColorPopup::onConfirm));
     okBtn->setPosition({ 200.0f, 20.0f });
     okBtn->setID("ok-button");
     m_buttonMenu->addChild(okBtn);
@@ -264,20 +224,102 @@ bool LICColorPopup::init(CCSprite* target, GJGameLevel* level) {
     return true;
 }
 
+void LICColorPopup::onEnable(CCObject* sender) {
+    m_enabled = !static_cast<CCMenuItemToggler*>(sender)->m_toggled;
+    updateState();
+}
+
+void LICColorPopup::onReset(CCObject* sender) {
+    auto alert = FLAlertLayer::create(
+        this,
+        "Reset Color",
+        "Are you sure you want to <cy>reset</c> the <cj>color</c> to its <cg>original value</c>?",
+        "No",
+        "Yes",
+        350.0f
+    );
+    alert->setTag(0);
+    alert->show();
+}
+
+void LICColorPopup::onHardReset(CCObject* sender) {
+    auto alert = FLAlertLayer::create(
+        this,
+        "Hard Reset Color",
+        "Are you sure you want to <cr>hard reset</c> the <cj>color</c> to its <cg>default value</c>?",
+        "No",
+        "Yes",
+        350.0f
+    );
+    alert->setTag(1);
+    alert->show();
+}
+
+void LICColorPopup::FLAlert_Clicked(FLAlertLayer* alert, bool btn2) {
+    if (!btn2) return;
+    switch (alert->getTag()) {
+        case 0:
+            m_color = m_originalColor;
+            break;
+        case 1:
+            m_color = m_defaultColor;
+            break;
+    }
+    updateState();
+}
+
+void LICColorPopup::onConfirm(CCObject* sender) {
+    m_setting->setStoredValue(m_color);
+    m_setting->setEnabled(m_enabled);
+    Popup::onClose(sender);
+}
+
+void LICColorPopup::textChanged(CCTextInputNode* node) {
+    switch (node->getTag()) {
+        case 0: {
+            if (auto r = numFromString<uint8_t>(node->getString())) {
+                m_color.r = r.unwrap();
+                updateState(node);
+            }
+            break;
+        }
+        case 1: {
+            if (auto g = numFromString<uint8_t>(node->getString())) {
+                m_color.g = g.unwrap();
+                updateState(node);
+            }
+            break;
+        }
+        case 2: {
+            if (auto b = numFromString<uint8_t>(node->getString())) {
+                m_color.b = b.unwrap();
+                updateState(node);
+            }
+        }
+        case 3: {
+            if (auto color = cc3bFromHexString(node->getString(), true)) {
+                m_color = color.unwrap();
+                updateState(node);
+            }
+            break;
+        }
+    }
+}
+
 void LICColorPopup::updateState(CCNode* except) {
-    if (except != m_rInput) {
+    if (except != m_rInput->getInputNode()) {
         m_rInput->setString(fmt::to_string(m_color.r));
         m_rInput->setEnabled(m_enabled);
     }
-    if (except != m_gInput) {
+    if (except != m_gInput->getInputNode()) {
         m_gInput->setString(fmt::to_string(m_color.g));
         m_gInput->setEnabled(m_enabled);
     }
-    if (except != m_bInput) {
+    if (except != m_bInput->getInputNode()) {
         m_bInput->setString(fmt::to_string(m_color.b));
         m_bInput->setEnabled(m_enabled);
     }
-    if (except != m_hexInput) {
+    if (except != m_hexInput->getInputNode()) {
         m_hexInput->setString(cc3bToHexString(m_color));
         m_hexInput->setEnabled(m_enabled);
     }
