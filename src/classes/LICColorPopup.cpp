@@ -230,41 +230,32 @@ void LICColorPopup::onEnable(CCObject* sender) {
 }
 
 void LICColorPopup::onReset(CCObject* sender) {
-    auto alert = FLAlertLayer::create(
+    m_queuedColor = m_originalColor;
+    FLAlertLayer::create(
         this,
         "Reset Color",
         "Are you sure you want to <cy>reset</c> the <cj>color</c> to its <cg>original value</c>?",
         "No",
         "Yes",
         350.0f
-    );
-    alert->setTag(0);
-    alert->show();
+    )->show();
 }
 
 void LICColorPopup::onHardReset(CCObject* sender) {
-    auto alert = FLAlertLayer::create(
+    m_queuedColor = m_defaultColor;
+    FLAlertLayer::create(
         this,
         "Hard Reset Color",
         "Are you sure you want to <cr>hard reset</c> the <cj>color</c> to its <cg>default value</c>?",
         "No",
         "Yes",
         350.0f
-    );
-    alert->setTag(1);
-    alert->show();
+    )->show();
 }
 
 void LICColorPopup::FLAlert_Clicked(FLAlertLayer* alert, bool btn2) {
     if (!btn2) return;
-    switch (alert->getTag()) {
-        case 0:
-            m_color = m_originalColor;
-            break;
-        case 1:
-            m_color = m_defaultColor;
-            break;
-    }
+    m_color = m_queuedColor;
     updateState();
 }
 
@@ -295,6 +286,7 @@ void LICColorPopup::textChanged(CCTextInputNode* node) {
                 m_color.b = b.unwrap();
                 updateState(node);
             }
+            break;
         }
         case 3: {
             if (auto color = cc3bFromHexString(node->getString(), true)) {

@@ -8,6 +8,7 @@ protected:
     cocos2d::ccColor3B m_color;
     cocos2d::ccColor3B m_originalColor;
     cocos2d::ccColor3B m_defaultColor;
+    cocos2d::ccColor3B m_queuedColor;
     cocos2d::extension::CCControlColourPicker* m_picker;
     cocos2d::CCSprite* m_target;
     geode::TextInput* m_rInput;
