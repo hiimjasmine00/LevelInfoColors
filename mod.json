@@ -1,19 +1,19 @@
 {
-    "geode": "5.0.0-alpha.2",
+    "geode": "5.0.0-beta.1",
     "gd": {
         "android": "2.2081",
         "win": "2.2081",
         "mac": "2.2081",
         "ios": "2.2081"
     },
-    "version": "v1.1.1-beta.1",
+    "version": "v1.1.1",
     "id": "hiimjustin000.level_info_colors",
     "name": "Level Info Colors",
     "developer": "hiimjasmine00",
     "description": "Customizable level background colors.",
     "dependencies": {
         "geode.node-ids": ">=v1.0.0",
-        "hiimjasmine00.optional_settings": ">=v2.0.0-beta.1"
+        "hiimjasmine00.optional_settings": ">=v2.0.0"
     },
     "settings": {
         "normal-color": {
