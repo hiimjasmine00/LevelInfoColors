@@ -1,6 +1,7 @@
 #include "LICColorPopup.hpp"
 #include "../LevelInfoColors.hpp"
 #include <Geode/binding/ButtonSprite.hpp>
+#include <Geode/cocos/extensions/GUI/CCControlExtension/CCControlColourPicker.h>
 
 using namespace geode::prelude;
 using namespace optional_settings;
@@ -127,7 +128,12 @@ bool LICColorPopup::init(CCSprite* target, GJGameLevel* level) {
     m_rInput = TextInput::create(50.0f, "R");
     m_rInput->setScale(0.7f);
     m_rInput->setCommonFilter(CommonFilter::Uint);
-    m_rInput->setDelegate(this, 0);
+    m_rInput->setCallback([this](const std::string& str) {
+        if (auto r = numFromString<uint8_t>(str)) {
+            m_color.r = r.unwrap();
+            updateState(m_rInput);
+        }
+    });
     m_rInput->setID("r-input");
     rColumn->addChild(m_rInput);
 
@@ -152,7 +158,12 @@ bool LICColorPopup::init(CCSprite* target, GJGameLevel* level) {
     m_gInput = TextInput::create(50.0f, "G");
     m_gInput->setScale(0.7f);
     m_gInput->setCommonFilter(CommonFilter::Uint);
-    m_gInput->setDelegate(this, 1);
+    m_gInput->setCallback([this](const std::string& str) {
+        if (auto g = numFromString<uint8_t>(str)) {
+            m_color.g = g.unwrap();
+            updateState(m_gInput);
+        }
+    });
     m_gInput->setID("g-input");
     gColumn->addChild(m_gInput);
 
@@ -177,7 +188,12 @@ bool LICColorPopup::init(CCSprite* target, GJGameLevel* level) {
     m_bInput = TextInput::create(50.0f, "B");
     m_bInput->setScale(0.7f);
     m_bInput->setCommonFilter(CommonFilter::Uint);
-    m_bInput->setDelegate(this, 2);
+    m_bInput->setCallback([this](const std::string& str) {
+        if (auto b = numFromString<uint8_t>(str)) {
+            m_color.b = b.unwrap();
+            updateState(m_bInput);
+        }
+    });
     m_bInput->setID("b-input");
     bColumn->addChild(m_bInput);
 
@@ -202,7 +218,12 @@ bool LICColorPopup::init(CCSprite* target, GJGameLevel* level) {
     m_hexInput = TextInput::create(165.0f, "Hex");
     m_hexInput->setScale(0.7f);
     m_hexInput->setCommonFilter(CommonFilter::Hex);
-    m_hexInput->setDelegate(this, 3);
+    m_hexInput->setCallback([this](const std::string& str) {
+        if (auto color = cc3bFromHexString(str, true)) {
+            m_color = color.unwrap();
+            updateState(m_hexInput);
+        }
+    });
     m_hexInput->setID("hex-input");
     hexColumn->addChild(m_hexInput);
 
@@ -265,53 +286,20 @@ void LICColorPopup::onConfirm(CCObject* sender) {
     Popup::onClose(sender);
 }
 
-void LICColorPopup::textChanged(CCTextInputNode* node) {
-    switch (node->getTag()) {
-        case 0: {
-            if (auto r = numFromString<uint8_t>(node->getString())) {
-                m_color.r = r.unwrap();
-                updateState(node);
-            }
-            break;
-        }
-        case 1: {
-            if (auto g = numFromString<uint8_t>(node->getString())) {
-                m_color.g = g.unwrap();
-                updateState(node);
-            }
-            break;
-        }
-        case 2: {
-            if (auto b = numFromString<uint8_t>(node->getString())) {
-                m_color.b = b.unwrap();
-                updateState(node);
-            }
-            break;
-        }
-        case 3: {
-            if (auto color = cc3bFromHexString(node->getString(), true)) {
-                m_color = color.unwrap();
-                updateState(node);
-            }
-            break;
-        }
-    }
-}
-
 void LICColorPopup::updateState(CCNode* except) {
-    if (except != m_rInput->getInputNode()) {
+    if (except != m_rInput) {
         m_rInput->setString(fmt::to_string(m_color.r));
         m_rInput->setEnabled(m_enabled);
     }
-    if (except != m_gInput->getInputNode()) {
+    if (except != m_gInput) {
         m_gInput->setString(fmt::to_string(m_color.g));
         m_gInput->setEnabled(m_enabled);
     }
-    if (except != m_bInput->getInputNode()) {
+    if (except != m_bInput) {
         m_bInput->setString(fmt::to_string(m_color.b));
         m_bInput->setEnabled(m_enabled);
     }
-    if (except != m_hexInput->getInputNode()) {
+    if (except != m_hexInput) {
         m_hexInput->setString(cc3bToHexString(m_color));
         m_hexInput->setEnabled(m_enabled);
     }

@@ -1,9 +1,10 @@
+#include <Geode/cocos/extensions/GUI/CCControlExtension/ColorPickerDelegate.h>
 #include <Geode/binding/FLAlertLayerProtocol.hpp>
 #include <Geode/ui/Popup.hpp>
 #include <Geode/ui/TextInput.hpp>
-#include <hiimjasmine00.optional_settings/include/OptionalColor3BSetting.hpp>
+#include <hiimjasmine00.optional_settings/OptionalColor3BSetting.hpp>
 
-class LICColorPopup : public geode::Popup, public TextInputDelegate, public FLAlertLayerProtocol, public cocos2d::extension::ColorPickerDelegate {
+class LICColorPopup : public geode::Popup, public FLAlertLayerProtocol, public cocos2d::extension::ColorPickerDelegate {
 protected:
     cocos2d::ccColor3B m_color;
     cocos2d::ccColor3B m_originalColor;
@@ -27,7 +28,6 @@ protected:
     void onHardReset(cocos2d::CCObject*);
     void FLAlert_Clicked(FLAlertLayer*, bool) override;
     void onConfirm(cocos2d::CCObject*);
-    void textChanged(CCTextInputNode*) override;
     void updateState(cocos2d::CCNode* = nullptr);
     void colorValueChanged(cocos2d::ccColor3B) override;
     void onClose(cocos2d::CCObject*) override;

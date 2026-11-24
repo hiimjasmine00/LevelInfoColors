@@ -1,6 +1,7 @@
 #include "LevelInfoColors.hpp"
 #include <Geode/binding/GJGameLevel.hpp>
 #include <Geode/loader/Mod.hpp>
+#include <Geode/loader/ModEvent.hpp>
 #include <jasmine/setting.hpp>
 
 using namespace geode::prelude;
